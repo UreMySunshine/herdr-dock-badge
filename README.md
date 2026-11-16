@@ -1,6 +1,6 @@
 # Dock badge
 
-A [Herdr](https://herdr.dev) app mod: shows how many agents are blocked or done on the macOS Dock icon, with a slim bar at the bottom of the window. Click the bar to jump to the first agent that needs you.
+A [Herdr](https://herdr.dev) app mod: puts the number of agents waiting for you on the macOS Dock icon. It draws nothing in the window and takes no space.
 
 ![Dock badge](preview.png)
 
@@ -12,13 +12,16 @@ Copy the mod folder into your Herdr home:
 cp -R mods/dock-badge ~/.config/herdr-app/mods/
 ```
 
-Herdr docks it at the bottom of the window the first time it sees the folder. If you prefer to place it yourself, set `"place": "none"` in `mod.json` and add this block to your layout:
+Herdr starts a mod only when its block is in a layout. This mod's block is 0 px, so it runs without showing anything.
+
+- On a personal layout, Herdr docks the 0 px block the first time it sees the folder.
+- On the shipped `main` layout, Herdr does not dock mods. Add this block to a personal layout instead:
 
 ```json
-{ "id": "dock-badge", "type": "block", "size": { "px": 22 }, "content": { "mod": "dock-badge" } }
+{ "id": "dock-badge", "type": "block", "size": { "px": 0 }, "content": { "mod": "dock-badge" } }
 ```
 
-Use one or the other, not both: a docked copy and a layout copy would run twice.
+Use one block, not several: each copy sets the same app-wide badge.
 
 ## What it counts
 
@@ -28,9 +31,9 @@ The Dock badge shows the total, up to `99+`. It is cleared when nothing is waiti
 
 ## Notes
 
-- The Dock badge is macOS only. On Linux and Windows the bar still works; `setBadge` is ignored by Herdr there.
+- The Dock badge is macOS only. On Linux and Windows the mod runs but `setBadge` is ignored.
 - The badge is app-wide. Another mod calling `setBadge` will replace it; only the last call wins.
-- The mod needs to be in the layout to run. Herdr has no headless mod copy yet.
+- A hidden block does not start its mod after a layout switch or app restart. The block must be visible with a size of 0 px, as above. See [herdrdev/herdr-app#1111](https://github.com/herdrdev/herdr-app/issues/1111).
 
 ## Recipe
 
